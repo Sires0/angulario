@@ -1,0 +1,136 @@
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal-content h2 {
+  margin: 0;
+  text-align: center;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: auto min-content 1fr; /* Label, Toggle, Explainer */
+    gap: 1rem 1.5rem;
+    align-items: center;
+    width: 100%;
+    max-width: 500px; /* Widen modal for new column */
+    margin: 0 auto;
+}
+
+.settings-explainer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.dark-mode .settings-explainer {
+    color: #adb5bd;
+}
+
+.settings-grid label {
+    font-weight: bold;
+    text-align: right;
+}
+
+.settings-grid input[type="number"],
+.settings-grid input[type="color"] {
+    width: 100px;
+    padding: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.interval-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.interval-inputs input {
+    width: 80px !important;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Dark Mode overrides for modal */
+.dark-mode .modal-content {
+    background: #333;
+    color: #e0e0e0;
+}
+
+
+
+.settings-header {
+    grid-column: 1 / -1; /* Span both columns */
+    margin-top: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6c757d;
+}
+
+.settings-divider {
+    grid-column: 1 / -1; /* Span both columns */
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 0.5rem 0;
+}
+
+.dark-mode .settings-header {
+    color: #adb5bd;
+    border-bottom-color: #495057;
+}
+
+.dark-mode .settings-divider {
+    border-top-color: #495057;
+}
+
+.color-inputs-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.settings-grid input[type="color"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 50px;
+    height: 30px;
+    background-color: transparent;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+.settings-grid input[type="color"]::-webkit-color-swatch {
+    border-radius: 4px;
+    border: none;
+}
+.settings-grid input[type="color"]::-moz-color-swatch {
+    border-radius: 4px;
+    border: none;
+}

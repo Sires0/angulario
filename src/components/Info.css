@@ -1,0 +1,20 @@
+.info-modal {
+    max-width: 600px;
+    text-align: left;
+    line-height: 1.6;
+}
+
+.info-modal h2 {
+    text-align: center;
+}
+
+.info-modal .formula-display {
+    text-align: center;
+    margin: 1.5rem 0;
+    font-size: 1.2rem;
+    overflow-x: auto; /* Allow scrolling for very wide formulas */
+}
+
+.info-text-block p {
+    text-align: justify;
+}

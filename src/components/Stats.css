@@ -1,0 +1,88 @@
+
+.stats-modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.stats-modal-content h2 {
+  margin: 0;
+  text-align: center;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    text-align: center;
+    background-color: #f0f2f5;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.summary-item h4 {
+    margin: 0 0 0.5rem 0;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.summary-item p {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.history-table-container {
+    max-height: 40vh;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th, .history-table td {
+    padding: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.history-table thead th {
+    background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+}
+
+/* Dark Mode */
+.dark-mode .stats-modal-content {
+    background: #333;
+    color: #e0e0e0;
+}
+
+.dark-mode .summary-grid {
+    background-color: #2a2a2a;
+}
+
+.dark-mode .summary-item h4 {
+    color: #aaa;
+}
+
+.dark-mode .history-table-container {
+    border-color: #555;
+}
+
+.dark-mode .history-table th, .dark-mode .history-table td {
+    border-bottom-color: #555;
+}
+
+.dark-mode .history-table thead th {
+    background-color: #383838;
+}
