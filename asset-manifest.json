@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Angulario/static/css/main.279a995a.css",
-    "main.js": "/Angulario/static/js/main.9e34deca.js",
-    "static/js/453.8f11dc4a.chunk.js": "/Angulario/static/js/453.8f11dc4a.chunk.js",
-    "index.html": "/Angulario/index.html",
-    "main.279a995a.css.map": "/Angulario/static/css/main.279a995a.css.map",
-    "main.9e34deca.js.map": "/Angulario/static/js/main.9e34deca.js.map",
-    "453.8f11dc4a.chunk.js.map": "/Angulario/static/js/453.8f11dc4a.chunk.js.map"
+    "main.css": "./static/css/main.279a995a.css",
+    "main.js": "./static/js/main.8c043473.js",
+    "static/js/453.8f11dc4a.chunk.js": "./static/js/453.8f11dc4a.chunk.js",
+    "index.html": "./index.html",
+    "main.279a995a.css.map": "./static/css/main.279a995a.css.map",
+    "main.8c043473.js.map": "./static/js/main.8c043473.js.map",
+    "453.8f11dc4a.chunk.js.map": "./static/js/453.8f11dc4a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.279a995a.css",
-    "static/js/main.9e34deca.js"
+    "static/js/main.8c043473.js"
   ]
 }
