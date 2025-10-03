@@ -7,6 +7,7 @@ export interface RoundData {
   actual: number;
   diff: number;
   score: number;
+  isEasy: boolean;
 }
 
 interface StatsProps {

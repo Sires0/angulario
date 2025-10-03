@@ -58,19 +58,34 @@ function generateRandomFunction(intervalLimit: number): MathNode {
         const f2String = `(${createModifiedString(chosenFuncs[1])})`;
         const op = ['+', '*', 'compose'][Math.floor(Math.random() * 3)];
 
-        let finalFuncString;
         if (op === '+') {
-            finalFuncString = `${f1String} + ${f2String}`;
-        } else if (op === '*') {
-            finalFuncString = `${f1String} * ${f2String}`;
-        } else { // compose
-            if (Math.random() < 0.5) {
-                finalFuncString = f1String.replace(/x/g, f2String);
-            } else {
-                finalFuncString = f2String.replace(/x/g, f1String);
-            }
+            return math.parse(`${f1String} + ${f2String}`);
         }
-        return math.parse(finalFuncString);
+        if (op === '*') {
+            return math.parse(`${f1String} * ${f2String}`);
+        }
+
+        // compose
+        const f1Node = math.parse(f1String);
+        const f2Node = math.parse(f2String);
+
+        if (Math.random() < 0.5) {
+            // f1(f2(x))
+            return f1Node.transform(function (node: MathNode) {
+                if (math.isSymbolNode(node) && node.name === 'x') {
+                    return f2Node;
+                }
+                return node;
+            });
+        } else {
+            // f2(f1(x))
+            return f2Node.transform(function (node: MathNode) {
+                if (math.isSymbolNode(node) && node.name === 'x') {
+                    return f1Node;
+                }
+                return node;
+            });
+        }
     }
 
     // numToCombine === 3

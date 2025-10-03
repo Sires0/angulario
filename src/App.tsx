@@ -29,6 +29,13 @@ type PlotData = {
   y2_values: (number | null)[];
 };
 
+interface IRoundData {
+    angle: number;
+    f1_str: string;
+    f2_str: string;
+    isEasy: boolean;
+}
+
 type ResultData = {
   actual_angle: number;
   score: number;
@@ -36,17 +43,11 @@ type ResultData = {
   f2_str: string;
 };
 
-interface IRoundData {
-    angle: number;
-    f1_str: string;
-    f2_str: string;
-}
-
 const defaultSettings: AppSettings = {
   isDarkMode: false,
   isUnitaryMode: false,
   acuteAnglesOnly: false,
-  isEasyInterval: true, // Default to easy interval
+  isEasyInterval: true,
   lineThickness: 3,
   func1Color: '#dc3232',
   func2Color: '#3264dc',
@@ -57,7 +58,7 @@ const PLOT_SAMPLES = 200;
 const mathJaxConfig = {
   tex: {
     inlineMath: [['$', '$'], ['\(', '\)']],
-    displayMath: [['$$', '$$'], ['\\\[', '\\\]']]
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
   }
 };
 
@@ -69,7 +70,6 @@ function App() {
       const savedSettings = localStorage.getItem('angulario-settings');
       if (savedSettings) {
         const parsed = JSON.parse(savedSettings);
-        // Ensure new settings have defaults if not in localStorage
         return { ...defaultSettings, ...parsed };
       }
     } catch (error) {
@@ -102,41 +102,40 @@ function App() {
     setGuess('');
 
     setTimeout(() => {
-        // Determine interval for the round
-        let currentInterval: [number, number];
-        if (settings.isEasyInterval) {
-            currentInterval = [-1, 1];
-        } else {
-            let a, b;
-            do {
-                a = Math.floor(Math.random() * 11) - 5; // -5 to 5
-                b = Math.floor(Math.random() * 11) - 5;
-            } while (a === b);
-            currentInterval = [Math.min(a, b), Math.max(a, b)];
-        }
-
         let angleResult: { angle: number | null, f1_final: MathNode, f2_final: MathNode } | null = null;
         let f1_round: MathNode, f2_round: MathNode;
+        let angleIsValid = false;
+        let newAngleIsEasy = false;
+        let currentInterval: [number, number];
 
-        while (angleResult === null || angleResult.angle === null) {
+        while (!angleIsValid) {
+            // Determine interval for the round
+            if (settings.isEasyInterval) {
+                currentInterval = [-1, 1];
+            } else {
+                let a, b;
+                do {
+                    a = Math.floor(Math.random() * 11) - 5; // -5 to 5
+                    b = Math.floor(Math.random() * 11) - 5;
+                } while (a === b);
+                currentInterval = [Math.min(a, b), Math.max(a, b)];
+            }
+
             const funcs = getNewFunctions(currentInterval);
             let f1_orig = funcs.f1;
             let f2_orig = funcs.f2;
 
-            // --- New Scaling Logic ---
+            // Scaling logic to make functions comparable
             const x_vals_for_scaling = Array.from({ length: 100 }, (_, i) => {
                 const t = i / 99;
                 return currentInterval[0] + t * (currentInterval[1] - currentInterval[0]);
             });
             const y1_vals = x_vals_for_scaling.map(x => f1_orig.evaluate({ x }));
             const y2_vals = x_vals_for_scaling.map(x => f2_orig.evaluate({ x }));
-
-            const max_abs_y1 = Math.max(...y1_vals.filter(y => isFinite(y)).map(Math.abs));
-            const max_abs_y2 = Math.max(...y2_vals.filter(y => isFinite(y)).map(Math.abs));
-
+            const max_abs_y1 = Math.max(...y1_vals.filter(y => isFinite(y as number)).map(y => Math.abs(y as number)));
+            const max_abs_y2 = Math.max(...y2_vals.filter(y => isFinite(y as number)).map(y => Math.abs(y as number)));
             f1_round = f1_orig;
             f2_round = f2_orig;
-
             if (max_abs_y1 > 0 && max_abs_y2 > 0) {
                 const ratio = max_abs_y1 > max_abs_y2 ? max_abs_y1 / max_abs_y2 : max_abs_y2 / max_abs_y1;
                 if (ratio > 5) {
@@ -148,36 +147,52 @@ function App() {
                     }
                 }
             }
-            // --- End Scaling Logic ---
 
             angleResult = calculateAngle(f1_round, f2_round, settings.isUnitaryMode, currentInterval, settings.acuteAnglesOnly);
+
+            // --- VALIDATION ---
+            if (angleResult === null || angleResult.angle === null || isNaN(angleResult.angle)) {
+                console.warn("Angle calculation failed (e.g. undefined function). Retrying...");
+                continue;
+            }
+
+            const newAngle = angleResult.angle;
+            const easyAngles = [0, 90, 180];
+            const tolerance = 1.0;
+            newAngleIsEasy = easyAngles.some(easy => Math.abs(newAngle - easy) < tolerance);
+
+            if (newAngleIsEasy && history.length > 0) {
+                const recentHistory = history.slice(-5);
+                const wasRecentAngleEasy = recentHistory.some(round => round.isEasy);
+                if (wasRecentAngleEasy) {
+                    console.warn(`Rejecting easy angle (${newAngle}°) due to recent easy angle. Retrying...`);
+                    continue;
+                }
+            }
+            
+            angleIsValid = true;
         }
 
-        const { angle, f1_final, f2_final } = angleResult; // f1_final and f2_final have been potentially flipped for acute mode
+        const { angle, f1_final, f2_final } = angleResult!;
 
         const newRoundData: IRoundData = {
             angle: angle!,
             f1_str: f1_final.toTex({parenthesis: 'auto'}),
             f2_str: f2_final.toTex({parenthesis: 'auto'}),
+            isEasy: newAngleIsEasy,
         };
         setRoundData(newRoundData);
 
-        // Generate plot data from the final, potentially scaled and flipped functions
         const x_values = Array.from({ length: PLOT_SAMPLES }, (_, i) => {
             const t = i / (PLOT_SAMPLES - 1);
             return currentInterval[0] + t * (currentInterval[1] - currentInterval[0]);
         });
         const y1_raw = x_values.map(x => f1_final.evaluate({ x }));
         const y2_raw = x_values.map(x => f2_final.evaluate({ x }));
+        const y1_safe = y1_raw.map(y => isFinite(y as number) ? y : null);
+        const y2_safe = y2_raw.map(y => isFinite(y as number) ? y : null);
 
-        const y1_safe = y1_raw.map(y => isFinite(y) ? y : null);
-        const y2_safe = y2_raw.map(y => isFinite(y) ? y : null);
-
-        const newPlotData: PlotData = {
-            x_values,
-            y1_values: y1_safe,
-            y2_values: y2_safe,
-        };
+        const newPlotData: PlotData = { x_values, y1_values: y1_safe, y2_values: y2_safe };
         setPlotData(newPlotData);
 
         if (isFirstRound) {
@@ -188,7 +203,7 @@ function App() {
         setGameState('playing');
     }, 50);
 
-  }, [settings.isUnitaryMode, settings.acuteAnglesOnly, settings.isEasyInterval]);
+  }, [settings, history]);
 
   const submitGuess = () => {
     if (!roundData || guess === '') return;
@@ -212,6 +227,7 @@ function App() {
       actual: actual_angle,
       diff: diff,
       score: score,
+      isEasy: roundData.isEasy,
     };
     setHistory(prev => [...prev, newHistoryEntry]);
 
@@ -250,7 +266,7 @@ function App() {
     setHistory([]);
     startNewRound(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.isUnitaryMode, settings.acuteAnglesOnly, settings.isEasyInterval]);
+  }, [settings]);
 
   useEffect(() => {
     const handleGlobalKeyPress = (e: KeyboardEvent) => {
