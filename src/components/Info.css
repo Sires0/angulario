@@ -18,3 +18,22 @@
 .info-text-block p {
     text-align: justify;
 }
+
+@media (max-width: 600px) {
+    .info-modal {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        border-radius: 0;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        overflow-y: auto;
+    }
+
+    .info-modal .modal-actions {
+        margin-top: auto; /* Push close button to the bottom */
+        padding-top: 1rem;
+    }
+}

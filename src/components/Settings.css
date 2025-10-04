@@ -1,4 +1,3 @@
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -133,4 +132,35 @@
 .settings-grid input[type="color"]::-moz-color-swatch {
     border-radius: 4px;
     border: none;
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        justify-content: flex-start;
+        padding: 1.5rem;
+        overflow-y: auto; /* Allow scrolling if content overflows */
+    }
+
+    .modal-actions {
+        margin-top: auto; /* Push close button to the bottom */
+        padding-top: 1rem;
+    }
+
+    .settings-grid {
+        grid-template-columns: auto 1fr; /* Stack label and control */
+        gap: 1rem;
+        max-width: none;
+    }
+
+    .settings-grid label {
+        text-align: left;
+    }
+
+    .settings-explainer {
+        display: none; /* Hide explainers on mobile to save space */
+    }
 }

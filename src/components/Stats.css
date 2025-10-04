@@ -1,4 +1,3 @@
-
 .stats-modal-content {
   background: white;
   padding: 2rem;
@@ -85,4 +84,32 @@
 
 .dark-mode .history-table thead th {
     background-color: #383838;
+}
+
+@media (max-width: 600px) {
+    .stats-modal-content {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        border-radius: 0;
+        padding: 1rem;
+        justify-content: flex-start;
+    }
+
+    .history-table-container {
+        max-height: none; /* Allow it to take full available height */
+        flex-grow: 1; /* Make table container grow to fill space */
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .summary-item p {
+        font-size: 1.2rem;
+    }
+
+    .stats-modal-content .modal-actions {
+        padding-top: 1rem;
+    }
 }

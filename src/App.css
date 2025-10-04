@@ -340,3 +340,59 @@ input:checked + .slider:before {
 .dark-mode .formula-header p {
     background: rgba(42, 42, 42, 0.8);
 }
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 600px) {
+    .header {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .header .stats {
+        font-size: 1rem;
+    }
+
+    .graph-container {
+        height: 300px; /* Adjust height for smaller screens */
+    }
+
+    .controls {
+        width: 100%;
+    }
+
+    .input-wrapper input {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 1.8rem; /* Make font bigger for easier reading */
+        padding: 0.8rem;
+    }
+
+    .input-wrapper span {
+        font-size: 1.8rem;
+        right: 1.2rem;
+    }
+
+    .controls button {
+        width: 90%;
+        padding: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .results h2 {
+        font-size: 1.5rem;
+    }
+
+    .results h3 {
+        font-size: 1.2rem;
+    }
+
+    .formula-header span {
+        font-size: 1rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
